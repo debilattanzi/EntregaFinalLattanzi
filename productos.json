@@ -1,8 +1,8 @@
 [
     { "nombre": "Bioderma", "precio": 95.00, "imagen": "/imagen/bioderma.jpg" },
-    { "nombre": "Adermicina", "precio": 70.00 },
-    { "nombre": "Clonazepam", "precio": 120.00 },
-    { "nombre": "Aspirina", "precio": 45.00 },
-    { "nombre": "Levotiroxina", "precio": 38.00 },
-    { "nombre": "Diocam", "precio": 89.00 }
+    { "nombre": "Adermicina", "precio": 70.00, "imagen": "/imagen/adermicina.jpg" },
+    { "nombre": "Clonazepam", "precio": 120.00, "imagen": "/imagen/clonazepam.jpeg" },
+    { "nombre": "Aspirina", "precio": 45.00, "imagen": "/imagen/aspirina.jpg" },
+    { "nombre": "Hipoglós", "precio": 38.00, "imagen": "/imagen/hipoglos.jpg" },
+    { "nombre": "Acetona", "precio": 89.00, "imagen": "/imagen/acetona.jpg" }
 ]

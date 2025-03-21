@@ -24,6 +24,7 @@ function mostrarProductos(productos) {
         let contenedorProducto = document.createElement("div");
         contenedorProducto.className = "col-md-4";
         contenedorProducto.innerHTML = `<div class='card mb-4 shadow-sm'>
+            <img src='${producto.imagen}' class='card-img-top' alt='${producto.nombre}'>
             <div class='card-body'>
                 <h5 class='card-title'>${producto.nombre}</h5>
                 <p class='card-text'>Precio: $${producto.precio}</p>
@@ -33,6 +34,7 @@ function mostrarProductos(productos) {
         contenedorProductos.appendChild(contenedorProducto);
     });
 }
+
 
 let carrito = [];
 
