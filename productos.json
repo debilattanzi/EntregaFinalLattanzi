@@ -1,0 +1,8 @@
+[
+    { "nombre": "Bioderma", "precio": 95.00, "imagen": "/imagen/bioderma.jpg" },
+    { "nombre": "Adermicina", "precio": 70.00 },
+    { "nombre": "Clonazepam", "precio": 120.00 },
+    { "nombre": "Aspirina", "precio": 45.00 },
+    { "nombre": "Levotiroxina", "precio": 38.00 },
+    { "nombre": "Diocam", "precio": 89.00 }
+]
