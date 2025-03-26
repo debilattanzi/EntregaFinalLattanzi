@@ -28,64 +28,69 @@ function mostrarProductos(productos) {
             <div class='card-body'>
                 <h5 class='card-title'>${producto.nombre}</h5>
                 <p class='card-text'>Precio: $${producto.precio}</p>
-                <button class='btn btn-primary' onclick='agregarAlCarrito("${producto.nombre}", ${producto.precio})'>Agregar al Carrito</button>
+                <button class='btn btn-primary' onclick='agregarAlCarrito(${producto.id}, "${producto.nombre}", ${producto.precio})'>Agregar al Carrito</button>
             </div>
         </div>`;
         contenedorProductos.appendChild(contenedorProducto);
     });
 }
 
-
 let carrito = [];
 
-function agregarAlCarrito(nombre, precio) {
-    const productoExistente = carrito.find(producto => producto.nombre === nombre);
-    if (productoExistente) {
-        productoExistente.cantidad++;
-    } else {
-        carrito.push({ nombre, precio, cantidad: 1 });
-    }
+function agregarAlCarrito(id, nombre, precio) {
+    let carritoGuardado = localStorage.getItem("carrito");
+    let carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
+
+    // Agregar SIEMPRE un nuevo producto sin verificar si ya existe
+    let nuevoProducto = { id: Date.now(), nombre, precio, cantidad: 1 };
+    carrito.push(nuevoProducto);
+
     localStorage.setItem("carrito", JSON.stringify(carrito));
     actualizarCarrito();
 }
 
+
 function actualizarCarrito() {
     let contenedorCarrito = document.getElementById("carrito");
     if (!contenedorCarrito) return;
+
     contenedorCarrito.innerHTML = "";
 
     let carritoGuardado = localStorage.getItem("carrito");
-    if (carritoGuardado) {
-        carrito = JSON.parse(carritoGuardado);
-    }
+    let carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
 
     if (carrito.length === 0) {
-        contenedorCarrito.innerHTML = "<p>El carrito está vacío.</p>";
+        contenedorCarrito.innerHTML = "<p>Carrito vacío</p>";
         return;
     }
 
-    carrito.forEach((producto, index) => {
+    carrito.forEach((producto) => {
         let itemCarrito = document.createElement("div");
         itemCarrito.className = "carrito-item";
-        itemCarrito.innerHTML = `<p>${producto.nombre} - $${producto.precio} x ${producto.cantidad} = $${producto.precio * producto.cantidad}</p>
+        itemCarrito.innerHTML = `
+            <p>${producto.nombre} - $${producto.precio} x ${producto.cantidad} = $${producto.precio * producto.cantidad}</p>
             <div>
-                <button class='btn btn-info btn-sm' onclick='modificarCantidad(${index}, -1)'>-</button>
-                <button class='btn btn-info btn-sm' onclick='modificarCantidad(${index}, 1)'>+</button>
-                <button class='btn btn-danger btn-sm' onclick='eliminarDelCarrito(${index})'>Eliminar Producto</button>
-            </div>`;
+                <button class='btn btn-info btn-sm' onclick='modificarCantidad(${producto.id}, -1)'>-</button>
+                <button class='btn btn-info btn-sm' onclick='modificarCantidad(${producto.id}, 1)'>+</button>
+                <button class='btn btn-danger btn-sm' onclick='eliminarDelCarrito(${producto.id})'>Eliminar</button>
+            </div>
+        `;
         contenedorCarrito.appendChild(itemCarrito);
     });
+    
 
     let total = carrito.reduce((sum, producto) => sum + producto.precio * producto.cantidad, 0);
     let totalElemento = document.createElement("p");
     totalElemento.innerHTML = `<strong>Total: $${total}</strong>`;
     contenedorCarrito.appendChild(totalElemento);
+
     let botonComprar = document.createElement("button");
     botonComprar.className = 'btn btn-success mt-2';
     botonComprar.textContent = 'Comprar';
     botonComprar.onclick = realizarCompra;
     contenedorCarrito.appendChild(botonComprar);
 }
+
 
 function modificarCantidad(index, cambio) {
     carrito[index].cantidad += cambio;
@@ -96,17 +101,20 @@ function modificarCantidad(index, cambio) {
     actualizarCarrito();
 }
 
-function eliminarDelCarrito(index) {
-    carrito.splice(index, 1);
+function eliminarDelCarrito(id) {
+    let carritoGuardado = localStorage.getItem("carrito");
+    let carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
+
+    // Filtrar el carrito y eliminar solo el producto con el ID especificado
+    carrito = carrito.filter(producto => producto.id !== id);
+
     localStorage.setItem("carrito", JSON.stringify(carrito));
     actualizarCarrito();
 }
 
+
 function realizarCompra() {
-    if (carrito.length === 0) {
-        mostrarMensaje('El carrito está vacío. Añade productos antes de comprar.');
-        return;
-    }
+
     carrito = [];
     localStorage.removeItem("carrito");
     actualizarCarrito();
@@ -114,6 +122,12 @@ function realizarCompra() {
 }
 
 function mostrarMensaje(mensaje) {
+    console.log("Mostrando mensaje:", mensaje); // Verificar si se ejecuta correctamente
     document.getElementById('mensajeModalCuerpo').textContent = mensaje;
-    $('#mensajeModal').modal('show');
+
+    const mensajeModal = new bootstrap.Modal(document.getElementById('mensajeModal'));
+    mensajeModal.show();
 }
+
+
+
