@@ -34,20 +34,23 @@ function mostrarProductos(productos) {
         contenedorProductos.appendChild(contenedorProducto);
     });
 }
-
 let carrito = [];
 
 function agregarAlCarrito(id, nombre, precio) {
     let carritoGuardado = localStorage.getItem("carrito");
-    let carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
+    let carrito = [];
 
-    // Agregar SIEMPRE un nuevo producto sin verificar si ya existe
+    if (carritoGuardado) {
+        carrito = JSON.parse(carritoGuardado);
+    }
+
     let nuevoProducto = { id: Date.now(), nombre, precio, cantidad: 1 };
     carrito.push(nuevoProducto);
 
     localStorage.setItem("carrito", JSON.stringify(carrito));
     actualizarCarrito();
 }
+
 
 
 function actualizarCarrito() {
@@ -60,7 +63,7 @@ function actualizarCarrito() {
     let carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
 
     if (carrito.length === 0) {
-        contenedorCarrito.innerHTML = "<p>Carrito vacío</p>";
+        contenedorCarrito.innerHTML = "<p>0</p>";
         return;
     }
 
@@ -91,21 +94,38 @@ function actualizarCarrito() {
     contenedorCarrito.appendChild(botonComprar);
 }
 
+function modificarCantidad(id, cambio) {
+    let carrito = [];
+    let carritoGuardado = localStorage.getItem("carrito");
 
-function modificarCantidad(index, cambio) {
-    carrito[index].cantidad += cambio;
-    if (carrito[index].cantidad <= 0) {
-        carrito.splice(index, 1);
+    if (carritoGuardado) {
+        carrito = JSON.parse(carritoGuardado);
     }
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-    actualizarCarrito();
+
+    let productoIndex = carrito.findIndex(producto => producto.id === id);
+    
+    if (productoIndex !== -1) {
+        carrito[productoIndex].cantidad += cambio;
+
+        if (carrito[productoIndex].cantidad <= 0) {
+            carrito.splice(productoIndex, 1);
+        }
+
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+        actualizarCarrito();
+    }
 }
 
-function eliminarDelCarrito(id) {
-    let carritoGuardado = localStorage.getItem("carrito");
-    let carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
 
-    // Filtrar el carrito y eliminar solo el producto con el ID especificado
+
+function eliminarDelCarrito(id) {
+    let carrito = [];
+    let carritoGuardado = localStorage.getItem("carrito");
+
+    if (carritoGuardado) {
+        carrito = JSON.parse(carritoGuardado);
+    }
+
     carrito = carrito.filter(producto => producto.id !== id);
 
     localStorage.setItem("carrito", JSON.stringify(carrito));
@@ -122,7 +142,7 @@ function realizarCompra() {
 }
 
 function mostrarMensaje(mensaje) {
-    console.log("Mostrando mensaje:", mensaje); // Verificar si se ejecuta correctamente
+    console.log("Mostrando mensaje:", mensaje);
     document.getElementById('mensajeModalCuerpo').textContent = mensaje;
 
     const mensajeModal = new bootstrap.Modal(document.getElementById('mensajeModal'));
